@@ -8,7 +8,7 @@
     <meta name="author" content="">
     
 
-    <title>小橙网运维管理系统</title>
+    <title>小橙网运维管理系统-- {% block title %}{% endblock %}</title>
 
     <link href="/static/css/bootstrap.css" rel="stylesheet">
     <link href="/static/css/dashboard.css" rel="stylesheet">
@@ -46,11 +46,12 @@
                 <li><a href="{% url 'about' %}">关于</a></li>
                 
         {% else %}
+            <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'login' %}">登录</a></li>
-               
-                
-          </ul>
-           {% endif %}
+            </ul>  
+        {% endif %}       
+         
+           
               
         </div>
       </div>
