@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+
+{% block body_block %}     
+     
+        
+
+          <h2 class="sub-header">用户列表</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>用户名</th>
+                  <th>姓名</th>
+                  <th>部门</th>
+                  <th>邮箱</th>
+                  
+                </tr>
+              </thead>
+              <tbody>
+              {% for item in lPage %}
+                  <tr>
+                  <td>{{ item.username }}</td>
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.user_type.groupname }}</td>
+                  <td>{{ item.email }}</td>
+                  
+                  
+                </tr>
+              {% endfor %}
+              
+              </tbody>
+            </table>
+          </div>
+        <div>
+        
+             {% include "app01/paginator.html" %}
+             
+        </div>
+      
+ 
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+
+{% block body_block %}     
+     
+         <h2 class="sub-header">新建用户</h2>
+
+ <form action="{% url 'useradd' %}" method="post" class="definewidth m20">
+<table class="table table-bordered table-hover definewidth m10">
+    <tr>
+        <td width="10%" class="tableleft">用户名</td>
+        <td><input type="text" placeholder="用户名" name="username"/></td>
+    </tr>
+    <tr>
+        <td  class="tableleft">姓名</td>
+        <td><input type="text" placeholder="姓名" name="realname"/></td>
+    </tr>
+ 
+    <tr>
+        <td class="tableleft">密码</td>
+        <td><input type="password" placeholder="密码" name="password"/></td>
+    </tr>
+   <tr>
+        <td class="tableleft">部门</td>
+        <td>
+            <select name="group">
+                {% for item in groups %}
+                <option value="{{ item.id }}">{{ item.groupname }}</option>
+                {% endfor %}
+                           
+        </select>
+        
+        
+        </td>
+    </tr>
+    <tr>
+        <td class="tableleft">邮箱</td>
+        <td><input type="text" placeholder="邮箱" name="email"/></td>
+    </tr>
+   
+ 
+ 
+    <tr>
+        <td class="tableleft"></td>
+        <td>
+            <button type="submit" class="btn btn-primary" type="button">保存</button>
+        </td>
+    </tr>
+   
+</table>
+</form>
+   
+{% endblock %}

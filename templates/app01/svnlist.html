@@ -1,0 +1,46 @@
+
+{% extends 'base.html' %}
+{% load sadmin_extras %}
+
+{% block body_block %}     
+     
+        
+
+          <h2 class="sub-header">SVN列表</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>SVN名称</th>
+                  <th>当前版本号</th>
+                 
+                  
+                </tr>
+              </thead>
+              <tbody>
+                {% for key,value in lPage.items %}
+                  <tr>
+                  <td> {{ key }}</td>
+                  
+                  <td>
+                    {{ value }}
+                  </td>
+                   
+                  </tr>
+                 
+                 
+                  {% endfor %}
+                   
+                
+         
+              
+              </tbody>
+            </table>
+          </div>
+        <div>
+             {% include "app01/paginator.html" %}
+             
+        </div>
+      
+ 
+{% endblock %}

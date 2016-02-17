@@ -1,0 +1,100 @@
+[groups]
+admin=admin
+dev=yhf,yj,cj,cah,zhq,lyy,fwf,zk,dby,yxp,zyf,sr,ny,yy,zfr,ys,xyf
+dev1=yj
+dev2=yhf,cj,zhq,fwf,zk,yj
+dev3=zk,cj,yhf,dby,yj
+dev4=yhf,yy,yxp,cah,dby,cj,yj
+dev5=yhf,zk,fwf,ny,zfr,zyf,lyy,yj
+sj=zzxh,lym,lzw,tb,zbt,yj,lhb
+design=lqh,sqr,yj
+
+[orange5s:/]
+@admin=rw
+@dev = rw
+* =
+
+[operations:/]
+*=r
+@dev1=rw
+
+[unreal:/]
+@sj=rw
+* =
+
+#Android_dev
+[Android_dev:/]
+@dev = rw
+* =
+ 
+#iOS_dev
+[iOS_dev:/]
+@dev = rw
+* = 
+
+#Design
+[Design:/]
+@design = rw
+@dev = r
+* = 
+
+#mp.orange5s.com
+[mp.orange5s.com:/]
+@dev2 = rw
+* = r
+ 
+#wap.orange5s.com
+[wap.orange5s.com:/]
+@dev2 = rw
+* =
+ 
+#m.orange5s.com
+[m.orange5s.com:/]
+@dev2 = rw
+* =
+
+#my.orange5s.com
+[my.orange5s.com:/]
+@dev2 = rw
+* =
+ 
+#mall.orange5s.com
+[mall.orange5s.com:/]
+@dev = rw
+* =
+ 
+#bbs.orange5s.com
+[bbs.orange5s.com:/]
+@dev2 = rw
+* =
+
+#tpc.orange5s.com
+[tpc.orange5s.com:/]
+@dev3 = rw
+* = 
+
+#ecom
+[ecom:/]
+@dev = rw
+* =
+ 
+#orange5sRelease
+[orange5sRelease:/]
+@dev = rw
+* =
+#python
+[python:/]
+@dev1 = rw
+* =
+#green3399
+[green3399:/]
+@dev4 = rw
+@dev1 = r
+* =
+#KUSO
+[KUSO:/]
+@dev5 = rw
+* = 
+#GKCS
+[GKCS:/]
+@dev = rw
