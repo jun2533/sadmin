@@ -1,38 +1,31 @@
 
 {% extends 'base.html' %}
-{% load sadmin_extras %}
+
 
 {% block body_block %}     
      
         
 
-          <h2 class="sub-header">SVN列表</h2>
+          <h2 class="sub-header">发布基于GIT tag</h2>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>SVN名称</th>
-                  <th>当前版本号</th>
-                 
+                  <th>网站名称</th>
+                  <th>当前tag</th>
+                  <th>操作</th>
                   
                 </tr>
               </thead>
               <tbody>
-                {% for item in lPage %}
                   <tr>
-                  <td> {{ item.sname }}</td>
+                  <td>orange5s</td>
                   
                   <td>
-                    {% for i in item.svnversion_set.all %}
-                    {{ i.version }}
-                    {% endfor %}
+                    V1.0
                   </td>
-                   
+                  <td>查看|发布</td>
                   </tr>
-                 
-                 
-                {% endfor %}
-                   
                 
          
               

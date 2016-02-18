@@ -27,6 +27,10 @@ class Svnversion(models.Model):
     
   
     
-    
+class MysqlEnv(models.Model):
+    envname = models.CharField(max_length=50)
 
+
+class Mysqlname(models.Model):
+    mname = models.CharField(max_length=50)
       

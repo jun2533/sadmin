@@ -16,4 +16,6 @@ urlpatterns = patterns('',
     url(r'^useradd/', views.useradd, name='useradd'),
     url(r'^createsvn/', views.createsvn, name='createsvn'),
     url(r'^svnlist/', views.svnlist, name='svnlist'),
+    url(r'^webupdate/', views.webupdate, name='webupdate'),
+    url(r'^mysqlupdate/', views.mysqlupdate, name='mysqlupdate'),
 )

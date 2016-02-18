@@ -1,0 +1,62 @@
+
+{% extends 'base.html' %}
+
+
+{% block body_block %}     
+     
+        
+
+          <h2 class="sub-header">mysql发布</h2>
+          <div class="table-responsive">
+            <form action="{% url 'mysqlupdate' %}" method="post" class="definewidth m20">
+            <table class="table table-bordered table-hover definewidth m10">
+   
+  
+ 
+ 
+   <tr>
+        <td class="tableleft">mysql服务器环境</td>
+        <td>
+            <select name="mysqlenv">
+                {% for item in mysqlenv %}
+                <option value="{{ item.id }}">{{ item.envname }}</option>
+              
+                {% endfor %}         
+            </select>
+        
+        
+        </td>
+    </tr>
+      <tr>
+        <td class="tableleft">mysql名称</td>
+        <td>
+            <select name="mysqlname">
+                {% for item in mysqlname %}
+                <option value="{{ item.id }}">{{ item.mname }}</option>
+                {% endfor %}
+                           
+            </select>
+        
+        
+        </td>
+    </tr>
+    <tr>
+        <td class="tableleft">mysql语句</td>
+        <td><textarea class="form-control" name="name1" rows="5" cols="30"></textarea></td>
+    </tr>
+   
+ 
+ 
+    <tr>
+        <td class="tableleft"></td>
+        <td>
+            <button type="submit" class="btn btn-primary" type="button">发布</button>
+        </td>
+    </tr>
+   
+</table>
+            </form>
+          </div>
+    
+ 
+{% endblock %}
