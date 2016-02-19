@@ -112,7 +112,7 @@ def createsvn(request):
 @login_required
 def svnlist(request):
     slist = Svname.objects.all()
-    data = SelfPaginator(request,slist, 8)
+    data = SelfPaginator(request,slist, 10)
     '''
     for sname in slist:
         n = Svname.objects.get(sname=sname)
