@@ -92,9 +92,9 @@ def createsvn(request):
     
     
     if request.method == 'POST':
-        svnpath = "/appdata/Dev/"
+        #svnpath = "/appdata/Dev/"
         svname=request.POST.get('svname',None)
-        name = svnpath + str(svname)
+        #name = svnpath + str(svname)
         if svname:
             count = Svname.objects.filter(sname=svname).count()
             if count == 1:
@@ -104,8 +104,8 @@ def createsvn(request):
                 Svname.objects.create(sname=svname)
                 #插入数据记录
                 #os.system("/usr/bin/svnadmin create name")
-                subprocess.call("/usr/bin/svnadmin create %s" % name,shell=True)
-        
+                subprocess.call("/usr/local/shell/create_svn.sh %s" % svname,shell=True)
+                return redirect('/accounts/svnlist/')
         
     return render(request,'app01/createsvn.html')
 
@@ -127,9 +127,11 @@ def svnlist(request):
     ret={'lPage':data}
     return render(request,'app01/svnlist.html',ret)
 
+@login_required
 def webupdate(request):
     return render(request,'app01/webupdate.html')
 
+@login_required
 def mysqlupdate(request):
     ret ={"mysqlenv":None,"mysqlname":None}
     ret['mysqlenv']=MysqlEnv.objects.all()
