@@ -104,7 +104,7 @@ def createsvn(request):
                 Svname.objects.create(sname=svname)
                 #插入数据记录
                 #os.system("/usr/bin/svnadmin create name")
-                subprocess.call("/usr/local/shell/create_svn.sh %s" % svname,shell=True)
+                subprocess.call("sudo /usr/local/shell/create_svn.sh %s" % svname,shell=True)
                 return redirect('/accounts/svnlist/')
         
     return render(request,'app01/createsvn.html')
