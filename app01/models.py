@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding:utf-8
 from django.db import models
-from time import sleep
+
 
 # Create your models here.
 
@@ -20,7 +20,7 @@ class Svname(models.Model):
     
     def __unicode__(self):
         return self.sname
-    
+  
 class Svnversion(models.Model):
     sname = models.ForeignKey('Svname')
     version = models.IntegerField()

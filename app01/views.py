@@ -75,12 +75,14 @@ def useradd(request):
             print "NO"
         if is_empty:
             groupObj = UserGroup.objects.get(id=groupId)
-            
+            print groupObj
+            '''
             UserInfo.objects.create(username=username,
                                     name=name,
                                     password=password,
                                     email=email,
-                                    user_type=groupObj)           
+                                    user_type=groupObj)
+            '''
             return userlist(request)
         else:
             ret['status']='不能为空.'
@@ -102,9 +104,13 @@ def createsvn(request):
                 return redirect('/accounts/svnlist/')
             else:
                 Svname.objects.create(sname=svname)
+                Svnversion.objects.create(version=0,
+                                          sname=Svname.objects.get(sname=svname)
+                                          )
                 #插入数据记录
                 #os.system("/usr/bin/svnadmin create name")
-                subprocess.call("sudo /usr/local/shell/create_svn.sh %s" % svname,shell=True)
+                #p=subprocess.Popen("sudo /usr/local/shell/create_svn.sh %s" % svname,shell=True,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                subprocess.call("/usr/bin/sudo /usr/local/shell/create_svn.sh %s" % svname,shell=True)
                 return redirect('/accounts/svnlist/')
         
     return render(request,'app01/createsvn.html')

@@ -14,7 +14,6 @@
                   <th>姓名</th>
                   <th>部门</th>
                   <th>邮箱</th>
-                  
                 </tr>
               </thead>
               <tbody>
@@ -24,18 +23,13 @@
                   <td>{{ item.name }}</td>
                   <td>{{ item.user_type.groupname }}</td>
                   <td>{{ item.email }}</td>
-                  
-                  
                 </tr>
               {% endfor %}
-              
               </tbody>
             </table>
           </div>
-        <div>
-        
-             {% include "app01/paginator.html" %}
-             
+        <div> 
+             {% include "app01/paginator.html" %}   
         </div>
       
  
