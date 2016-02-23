@@ -38,5 +38,8 @@ str_val = cf.get("groups", "dev")
 l=str_val.split(",")
 
 #print l.append("bbbb")
-l.remove("dby")
-print l
+l.remove("yj")
+
+cf.set("groups", "dev",",".join(l))
+cf.write(open("orange5s.authz", "w"))
+

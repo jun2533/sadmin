@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 #coding:utf-8
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 from django.shortcuts import render,render_to_response,redirect
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import authenticate, login,logout
@@ -10,30 +14,21 @@ from django.contrib.auth.decorators import login_required
 from models import UserInfo,UserGroup,Svname,Svnversion,MysqlEnv,Mysqlname
 
 from common.CommonPaginator import SelfPaginator
+from common import ldaphelper
+
 import os
 import subprocess
 
 def user_login(request):
-    
     if request.method == 'POST':
-        
         user = authenticate(username=request.POST['username'], 
                             password=request.POST['password'])
-        
         if user:
-            
             if user.is_active:
-                login(request,user)
-                
-                
-                
-                
-               
-                return HttpResponseRedirect('/')
-                
+                login(request,user)  
+                return HttpResponseRedirect('/')   
             else:
                 return HttpResponse("Your account is disabled.")
-             
         else:
             print "Invalid login details: {0}, {1}".format(username, password)
             return HttpResponse("Invalid login details supplied.")
@@ -69,13 +64,26 @@ def useradd(request):
         is_empty = all([username,name,password,email])
         #print is_empty
         if groupId == '1':
+            #创建SVN帐号和设置权限
+            stooge_name = str(username)
+            givenname = str(name[0])
+            sn = str(name[1:])
+            mail = str(email)
+            userpassword = str(password)
+            stooge_ou = 'dev'
+            stooge_info = {'cn':['xcw'],'givenname':[givenname],'mail':[mail],
+                   'objectclass':['top','person','inetOrgPerson','shadowAccount'],
+                   'sn':[sn],'uid':[stooge_name],'userpassword':[userpassword],}
             
-            print "OK"
+            l=ldaphelper.LDAPMgmt()
+            l.add_stooge(stooge_name,stooge_ou,stooge_info)
+            
         else:
+            #创建samba帐号
             print "NO"
         if is_empty:
             groupObj = UserGroup.objects.get(id=groupId)
-            print groupObj
+            #print groupObj
             '''
             UserInfo.objects.create(username=username,
                                     name=name,

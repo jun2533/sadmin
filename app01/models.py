@@ -14,7 +14,11 @@ class UserInfo(models.Model):
 
 class UserGroup(models.Model):
     groupname = models.CharField(max_length=50)
-
+    
+    
+    def __unicode__(self):
+        return self.groupname
+    
 class Svname(models.Model):
     sname = models.CharField(max_length=50)
     
