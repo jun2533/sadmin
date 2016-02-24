@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+{% block body_block %}     
+     
+         <h2 class="sub-header">删除用户</h2>
+
+ <form action="{% url 'userdel' %}" method="post" class="definewidth m20">
+<table class="table table-bordered table-hover definewidth m10">
+    <tr>
+        <td width="10%" class="tableleft">用户名</td>
+        <td><input type="text" placeholder="用户名" name="username"/></td>
+    </tr>
+    
+ 
+   
+   <tr>
+        <td class="tableleft">部门</td>
+        <td>
+            <select name="group">
+                {% for item in groups %}
+                <option value="{{ item.id }}">{{ item.groupname }}</option>
+                {% endfor %}
+                           
+        </select>
+        
+        
+        </td>
+    </tr>
+    
+   
+ 
+ 
+    <tr>
+        <td class="tableleft"></td>
+        <td>
+            <button type="submit" class="btn btn-primary" type="button">删除</button>
+        </td>
+    </tr>
+   
+</table>
+</form>
+   
+{% endblock %}

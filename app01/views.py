@@ -14,7 +14,8 @@ from django.contrib.auth.decorators import login_required
 from models import UserInfo,UserGroup,Svname,Svnversion,MysqlEnv,Mysqlname
 
 from common.CommonPaginator import SelfPaginator
-from common import ldaphelper
+from common.confhelper import makeSecret
+from common import ldaphelper,confhelper
 
 import os
 import subprocess
@@ -45,7 +46,7 @@ def user_logout(request):
 @login_required
 def userlist(request):
     ulist = UserInfo.objects.all()
-    data = SelfPaginator(request,ulist, 8)
+    data = SelfPaginator(request,ulist, 10)
     ret={'lPage':data}
     return render(request,'app01/userlist.html',ret)
 
@@ -63,24 +64,33 @@ def useradd(request):
         email = request.POST.get('email',None)
         is_empty = all([username,name,password,email])
         #print is_empty
+        
+        stooge_name = str(username)
+        userpassword = str(password)
+        
         if groupId == '1':
             #创建SVN帐号和设置权限
-            stooge_name = str(username)
-            givenname = str(name[0])
-            sn = str(name[1:])
+            
+            givenname = str(name[1:])
             mail = str(email)
-            userpassword = str(password)
+            sn = str(name[0])
+            
             stooge_ou = 'dev'
             stooge_info = {'cn':['xcw'],'givenname':[givenname],'mail':[mail],
                    'objectclass':['top','person','inetOrgPerson','shadowAccount'],
-                   'sn':[sn],'uid':[stooge_name],'userpassword':[userpassword],}
+                   'sn':[sn],'uid':[stooge_name],'userpassword':[makeSecret(mail)],}
             
             l=ldaphelper.LDAPMgmt()
             l.add_stooge(stooge_name,stooge_ou,stooge_info)
             
+            c = confhelper.conf("/appdata/Dev/orange5s.authz","groups",stooge_ou)
+            c.add_user(stooge_name)
+            
         else:
             #创建samba帐号
             print "NO"
+            #subprocess.call("/usr/bin/sudo /usr/local/shell/create_svn.sh %s" % svname,shell=True)
+            subprocess.call("/usr/bin/ansible -v bjsmb -m shell -a '/usr/local/shell/test.sh %s %s'" %(stooge_name,userpassword))
         if is_empty:
             groupObj = UserGroup.objects.get(id=groupId)
             #print groupObj
@@ -95,6 +105,36 @@ def useradd(request):
         else:
             ret['status']='不能为空.'
     return render(request,'app01/useradd.html',ret)
+
+@login_required
+def userdel(request):
+    ret={'status':None,"groups":None}
+    ret['groups']= UserGroup.objects.all()
+    
+    if request.method == 'POST':
+        username = request.POST.get('username',None)
+        groupId = request.POST.get('group',None)
+        
+        if groupId == '1':
+            stooge_name = str(username)
+            stooge_ou = 'dev'
+            
+            l=ldaphelper.LDAPMgmt()
+            l.delete_stooge(stooge_name,stooge_ou)
+            
+            c = confhelper.conf("/appdata/Dev/orange5s.authz","groups",stooge_ou)
+            c.delete_user(stooge_name)
+            print "OK"
+        else:
+            print "NO"
+        
+        if username:
+            UserInfo.objects.get(username=username).delete()
+        #return userlist(request)
+        return redirect('/accounts/userlist/')
+    return render(request,'app01/userdel.html',ret)
+
+
 
 @login_required
 def createsvn(request):
