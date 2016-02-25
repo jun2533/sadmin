@@ -53,8 +53,6 @@ def userlist(request):
 def useradd(request):
     ret={'status':None,"groups":None}
     ret['groups']= UserGroup.objects.all()
-    
-    
     if request.method == 'POST':
         username = request.POST.get('username',None)
         name = request.POST.get('realname',None)
@@ -74,14 +72,10 @@ def useradd(request):
             
             else:
             #创建samba帐号
-                print "NO"
-                cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/test.sh" %s %s' %(stooge_name,userpassword)
-                #subprocess.call("/usr/bin/sudo /usr/local/shell/create_svn.sh %s" % svname,shell=True)
+                cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/useradd.sh" %s %s' %(username,password)
                 subprocess.call(cmd,shell=True)
         
             groupObj = UserGroup.objects.get(id=groupId)
-            #print groupObj
-            
             UserInfo.objects.create(username=username,
                                     name=name,
                                     password=password,
@@ -103,15 +97,18 @@ def userdel(request):
         groupId = request.POST.get('group',None)
         if username:
             if groupId == '1':
+                #删除SVN帐号
                 stooge_ou = 'dev'
                 l=ldaphelper.LDAPMgmt()
                 l.delete_stooge(username,stooge_ou)
                 c = confhelper.conf("/appdata/Dev/orange5s.authz","groups",stooge_ou)
                 c.delete_user(username)
             else:
-                print "NO"
+                #删除Samba帐号
+                cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/userdel.sh" %s' %(username)
+                subprocess.call(cmd,shell=True)
+                
             UserInfo.objects.get(username=username).delete()
-        #return userlist(request)
             return redirect('/accounts/userlist/')
     return render(request,'app01/userdel.html',ret)
 
@@ -119,9 +116,6 @@ def userdel(request):
 
 @login_required
 def createsvn(request):
-    
-    
-    
     if request.method == 'POST':
         #svnpath = "/appdata/Dev/"
         svname=request.POST.get('svname',None)
