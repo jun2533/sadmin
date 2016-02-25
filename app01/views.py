@@ -72,7 +72,7 @@ def useradd(request):
             
             else:
             #创建samba帐号
-                cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/useradd.sh" %s %s' %(username,password)
+                cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/useradd.sh %s %s"' %(username,password)
                 subprocess.call(cmd,shell=True)
         
             groupObj = UserGroup.objects.get(id=groupId)
@@ -105,7 +105,7 @@ def userdel(request):
                 c.delete_user(username)
             else:
                 #删除Samba帐号
-                cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/userdel.sh" %s' %(username)
+                cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/userdel.sh %s"' %(username)
                 subprocess.call(cmd,shell=True)
                 
             UserInfo.objects.get(username=username).delete()
