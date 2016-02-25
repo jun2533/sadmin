@@ -14,7 +14,6 @@ from django.contrib.auth.decorators import login_required
 from models import UserInfo,UserGroup,Svname,Svnversion,MysqlEnv,Mysqlname
 
 from common.CommonPaginator import SelfPaginator
-from common.confhelper import makeSecret
 from common import ldaphelper,confhelper
 
 import os
@@ -63,45 +62,33 @@ def useradd(request):
         groupId = request.POST.get('group',None)
         email = request.POST.get('email',None)
         is_empty = all([username,name,password,email])
-        #print is_empty
-        
-        stooge_name = str(username)
-        userpassword = str(password)
-        
-        if groupId == '1':
+        if is_empty: 
+            if groupId == '1':
             #创建SVN帐号和设置权限
+                stooge_ou = 'dev'
+                l=ldaphelper.LDAPMgmt()
+                l.add_stooge(username,stooge_ou,name,email)
             
-            givenname = str(name[1:])
-            mail = str(email)
-            sn = str(name[0])
+                c = confhelper.conf("/appdata/Dev/orange5s.authz","groups",stooge_ou)
+                c.add_user(username)
             
-            stooge_ou = 'dev'
-            stooge_info = {'cn':['xcw'],'givenname':[givenname],'mail':[mail],
-                   'objectclass':['top','person','inetOrgPerson','shadowAccount'],
-                   'sn':[sn],'uid':[stooge_name],'userpassword':[makeSecret(mail)],}
-            
-            l=ldaphelper.LDAPMgmt()
-            l.add_stooge(stooge_name,stooge_ou,stooge_info)
-            
-            c = confhelper.conf("/appdata/Dev/orange5s.authz","groups",stooge_ou)
-            c.add_user(stooge_name)
-            
-        else:
+            else:
             #创建samba帐号
-            print "NO"
-            #subprocess.call("/usr/bin/sudo /usr/local/shell/create_svn.sh %s" % svname,shell=True)
-            subprocess.call("/usr/bin/ansible -v bjsmb -m shell -a '/usr/local/shell/test.sh %s %s'" %(stooge_name,userpassword))
-        if is_empty:
+                print "NO"
+                cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/test.sh" %s %s' %(stooge_name,userpassword)
+                #subprocess.call("/usr/bin/sudo /usr/local/shell/create_svn.sh %s" % svname,shell=True)
+                subprocess.call(cmd,shell=True)
+        
             groupObj = UserGroup.objects.get(id=groupId)
             #print groupObj
-            '''
+            
             UserInfo.objects.create(username=username,
                                     name=name,
                                     password=password,
                                     email=email,
                                     user_type=groupObj)
-            '''
-            return userlist(request)
+            
+            return redirect('/accounts/userlist/')
         else:
             ret['status']='不能为空.'
     return render(request,'app01/useradd.html',ret)
@@ -114,24 +101,18 @@ def userdel(request):
     if request.method == 'POST':
         username = request.POST.get('username',None)
         groupId = request.POST.get('group',None)
-        
-        if groupId == '1':
-            stooge_name = str(username)
-            stooge_ou = 'dev'
-            
-            l=ldaphelper.LDAPMgmt()
-            l.delete_stooge(stooge_name,stooge_ou)
-            
-            c = confhelper.conf("/appdata/Dev/orange5s.authz","groups",stooge_ou)
-            c.delete_user(stooge_name)
-            print "OK"
-        else:
-            print "NO"
-        
         if username:
+            if groupId == '1':
+                stooge_ou = 'dev'
+                l=ldaphelper.LDAPMgmt()
+                l.delete_stooge(username,stooge_ou)
+                c = confhelper.conf("/appdata/Dev/orange5s.authz","groups",stooge_ou)
+                c.delete_user(username)
+            else:
+                print "NO"
             UserInfo.objects.get(username=username).delete()
         #return userlist(request)
-        return redirect('/accounts/userlist/')
+            return redirect('/accounts/userlist/')
     return render(request,'app01/userdel.html',ret)
 
 

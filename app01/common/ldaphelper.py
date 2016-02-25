@@ -4,6 +4,7 @@ import sys
 sys.path.append("/usr/lib64/python2.6/site-packages")
 
 import ldap
+from confhelper import makeSecret
 
 LDAP_HOST = '192.168.0.12'
 LDAP_BASE_DN = 'dc=orange5s,dc=com'
@@ -44,11 +45,24 @@ class LDAPMgmt:
                 
         return stooge_list
     
-    def add_stooge(self,stooge_name,stooge_ou,stooge_info):
+    def add_stooge(self,username,stooge_ou,name,email):
+        #print name[0]
+        stooge_name = str(username)
+        givenname = name.decode('utf8')[1:].encode('utf8')
+        print givenname
+        mail = str(email)
+        sn = name.decode('utf8')[0].encode('utf8')
+        print sn
         stooge_dn = 'uid=%s,ou=%s,%s' % (stooge_name, stooge_ou, self.ldap_base_dn)
+        stooge_info = {'cn':['xcw'],'givenname':[givenname],'mail':[mail],
+                   'objectclass':['top','person','inetOrgPerson','shadowAccount'],
+                   'sn':[sn],'uid':[stooge_name],'userpassword':[makeSecret(mail)],}
+        
         stooge_attrib = [(k, v) for (k, v) in stooge_info.items()]
         print "Adding stooge %s with ou=%s" % (stooge_name, stooge_ou)
         self.ldapconn.add_s(stooge_dn, stooge_attrib)
+            
+    
     
     def delete_stooge(self,stooge_name,stooge_ou):
         stooge_dn = 'uid=%s,ou=%s,%s' % (stooge_name, stooge_ou, self.ldap_base_dn)
@@ -57,12 +71,16 @@ class LDAPMgmt:
 
 if __name__ == "__main__":
     l=LDAPMgmt()
-    stooge_name = 'yj'
-    print type(stooge_name)
-    stooge_ou = 'design'
+    l.delete_stooge('yjlk', 'dev')
+    #l.add_stooge('yjlk', 'dev', '杨工', 'yj@126.com')
+    #stooge_name = 'yj'
+    #print type(stooge_name)
+    #stooge_ou = 'design'
+    '''
     stooge_info = {'cn':['xcw'],'givenname':['你好'],'mail':['test@123.com'],
                    'objectclass':['top','person','inetOrgPerson','shadowAccount'],
                    'sn':['好'],'uid':[stooge_name],'userpassword':['ttttt'],}
+    '''
     #print stooge_info
     #l.add_stooge(stooge_name,stooge_ou,stooge_info)
     #l.list_stooges(attrib=['uid','cn','mail','sn'])
