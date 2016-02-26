@@ -17,6 +17,8 @@ urlpatterns = patterns('',
     url(r'^userdel/', views.userdel, name='userdel'),
     url(r'^createsvn/', views.createsvn, name='createsvn'),
     url(r'^svnlist/', views.svnlist, name='svnlist'),
+    url(r'^filelist/', views.filelist, name='filelist'),
+    url(r'^setfile/', views.setfile, name='setfile'),
     url(r'^webupdate/', views.webupdate, name='webupdate'),
     url(r'^mysqlupdate/', views.mysqlupdate, name='mysqlupdate'),
 )

@@ -29,8 +29,12 @@ class Svnversion(models.Model):
     sname = models.ForeignKey('Svname')
     version = models.IntegerField()
     
-  
-    
+class FileList(models.Model):
+    filename = models.CharField(max_length=10)   
+
+class FileRole(models.Model):    
+    rolename = models.CharField(max_length=5)
+
 class MysqlEnv(models.Model):
     envname = models.CharField(max_length=50)
 

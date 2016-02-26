@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login,logout
 
 from django.contrib.auth.decorators import login_required
 # Create your views here.
-from models import UserInfo,UserGroup,Svname,Svnversion,MysqlEnv,Mysqlname
+from models import *
 
 from common.CommonPaginator import SelfPaginator
 from common import ldaphelper,confhelper
@@ -155,6 +155,33 @@ def svnlist(request):
     '''
     ret={'lPage':data}
     return render(request,'app01/svnlist.html',ret)
+
+@login_required
+def filelist(request):
+    
+    return render(request,'app01/filelist.html')
+
+@login_required
+def setfile(request):
+    ret = {'filelist':None,'role':None}
+    file_l = request.POST.getlist('filel')
+    ret['filelist']= FileList.objects.all()
+    ret['roles']=FileRole.objects.all()
+    if request.method == 'POST':
+        username = request.POST.get('username',None)
+        file_l = request.POST.getlist('filel')
+        role = request.POST.get('role')
+        if username and file_l:
+            if role == '1':
+                #设置可读
+                print "OK"
+                sfile = " ".join(file_l)
+                cmd = "/usr/local/shell/test.sh %s %s %s" %(role,username,sfile)
+                subprocess.call(cmd,shell=True)
+            else:
+                #设置读写
+                print "No"
+    return render(request,'app01/setfile.html',ret)
 
 @login_required
 def webupdate(request):

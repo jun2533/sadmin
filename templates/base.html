@@ -13,7 +13,7 @@
     <link href="/static/css/bootstrap.css" rel="stylesheet">
     <link href="/static/css/dashboard.css" rel="stylesheet">
     <link href="/static/css/signin.css" rel="stylesheet">
-
+    {% block css %}{% endblock %}
  
   </head>
 
@@ -72,9 +72,10 @@
           <ul class="nav nav-sidebar">
             <li><a href="{% url 'svnlist' %}">查看SVN最新版本</a></li>
             <li><a href="{% url 'createsvn' %}">新建SVN</a></li>
-            
-            
-           
+          </ul>
+           <ul class="nav nav-sidebar">
+            <li><a href="{% url 'filelist' %}">查看设计共享权限</a></li>
+            <li><a href="{% url 'setfile' %}">修改权限</a></li>
           </ul>
           <ul class="nav nav-sidebar">
             <li><a href="{% url 'webupdate' %}">网站发布</a></li>
