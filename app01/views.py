@@ -169,8 +169,6 @@ def filelist(request):
     return render(request,'app01/filelist.html',ret)
 
 
-
-
 @login_required
 def setfile(request):
     
@@ -185,9 +183,22 @@ def setfile(request):
         file_l = request.POST.getlist('filel')
         role = request.POST.get('role')
         ulist=UserList.objects.filter(username__username=username)
-        if username and file_l and ulist:
+        if not ulist:
+            usernameObj=UserInfo.objects.get(username=username)
+            print usernameObj
+            if role == '1':
+                rfile= ",".join(file_l)
+                UserList.objects.create(rfile=rfile,username=usernameObj)
+                
             
-            setrole(role,ulist,file_l)
+            else:
+                wfile= ",".join(file_l)
+                UserList.objects.create(wfile=wfile,username=usernameObj)
+                #UserList.objects.create()
+        else:
+            if username and file_l and ulist:
+            
+                setrole(role,ulist,file_l)
             '''
             r_list=[]
             ulist=UserList.objects.filter(username__username=username)
@@ -200,11 +211,11 @@ def setfile(request):
                     rfile =",".join(r_list)
                     #UserList.objects.filter(username__username=username).update(rfile=rfile)
             '''
-            sfile = " ".join(file_l)
-            cmd = "/usr/bin/sudo /usr/local/shell/test.sh %s %s %s" %(role,username,sfile)
-            subprocess.call(cmd,shell=True)
+        sfile = " ".join(file_l)
+        cmd = "/usr/bin/sudo /usr/local/shell/test.sh %s %s %s" %(role,username,sfile)
+        subprocess.call(cmd,shell=True)
             
-            return redirect('/accounts/filelist/')
+        return redirect('/accounts/filelist/')
           
     
    
