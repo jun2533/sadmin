@@ -1,0 +1,45 @@
+
+{% extends 'base.html' %}
+{% load sadmin_extras %}
+{% block css %}
+<style type="text/css">
+td,th{
+  text-align:center;
+  }
+</style>
+{% endblock %}
+{% block body_block %}     
+		
+             <h2 class="sub-header">权限列表</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>用户名</th>
+                  <th>姓名</th>
+                  <th>可读</th>
+				  <th>可写</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for item in lPage %}
+                  <tr>
+                  <td >{{ item.username.username }}</td>
+                  <td >{{ item.username.name }}</td>
+                  <td>{{ item.rfile }}</td>
+                  <td> {{ item.wfile }}</td>
+                  </tr>
+               {% endfor %}
+              
+              </tbody>
+            </table>
+          </div>
+     
+      
+        <div>
+             {% include "app01/paginator.html" %}
+             
+        </div>
+      
+ 
+{% endblock %}

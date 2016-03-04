@@ -2,7 +2,6 @@
 #coding:utf-8
 
 import ConfigParser
-
 import hashlib,os
 from base64 import encodestring as encode
 
@@ -11,7 +10,30 @@ def makeSecret(password):
     h = hashlib.sha1(password)
     h.update(salt)
     return "{SSHA}" + encode(h.digest()+salt)
+
+def setrole(role,ulist,mlist):
+    f_list=[]
+    if role == '1':
+        for i in ulist:
+            f_list=i.rfile.split(",")   
+    else:
+        for i in ulist:
+            f_list=i.wfile.split(",")
     
+    count = len(f_list)
+     
+    for i in mlist:
+        if i not in f_list:
+            f_list.append(i) 
+    
+    if len(f_list) > count : 
+        lfile =",".join(f_list)
+        if role == '1':
+            ulist.update(rfile=lfile)
+        else:
+            ulist.update(wfile=lfile)
+
+
 class conf():
     def __init__(self,cfile,ini,ou):
         

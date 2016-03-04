@@ -14,9 +14,10 @@ from django.contrib.auth.decorators import login_required
 from models import *
 
 from common.CommonPaginator import SelfPaginator
+from common.confhelper import setrole
 from common import ldaphelper,confhelper
 
-import os
+import os,re
 import subprocess
 
 def user_login(request):
@@ -107,7 +108,8 @@ def userdel(request):
                 #删除Samba帐号
                 cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/userdel.sh %s"' %(username)
                 subprocess.call(cmd,shell=True)
-                
+                #删除userlist数据
+                UserList.objects.get(username__username=username).delete()
             UserInfo.objects.get(username=username).delete()
             return redirect('/accounts/userlist/')
     return render(request,'app01/userdel.html',ret)
@@ -158,29 +160,64 @@ def svnlist(request):
 
 @login_required
 def filelist(request):
+   
+    ulist = UserList.objects.all()
+    data = SelfPaginator(request,ulist, 10)
+    ret={'lPage':data}
     
-    return render(request,'app01/filelist.html')
+    #print UserList.objects.values('filelist')
+    return render(request,'app01/filelist.html',ret)
+
+
+
 
 @login_required
 def setfile(request):
-    ret = {'filelist':None,'role':None}
-    file_l = request.POST.getlist('filel')
+    
+    ret = {'filelist':None,'roles':None}
+    #file_l = request.POST.getlist('filel')
     ret['filelist']= FileList.objects.all()
     ret['roles']=FileRole.objects.all()
+   
+    
     if request.method == 'POST':
         username = request.POST.get('username',None)
         file_l = request.POST.getlist('filel')
         role = request.POST.get('role')
-        if username and file_l:
-            if role == '1':
-                #设置可读
-                print "OK"
-                sfile = " ".join(file_l)
-                cmd = "/usr/local/shell/test.sh %s %s %s" %(role,username,sfile)
-                subprocess.call(cmd,shell=True)
-            else:
-                #设置读写
-                print "No"
+        ulist=UserList.objects.filter(username__username=username)
+        if username and file_l and ulist:
+            
+            setrole(role,ulist,file_l)
+            '''
+            r_list=[]
+            ulist=UserList.objects.filter(username__username=username)
+            for i in ulist:
+                r_list=i.rfile.split(",")
+                
+            for i in file_l:
+                if i not in r_list:
+                    r_list.append(i)
+                    rfile =",".join(r_list)
+                    #UserList.objects.filter(username__username=username).update(rfile=rfile)
+            '''
+            sfile = " ".join(file_l)
+            cmd = "/usr/bin/sudo /usr/local/shell/test.sh %s %s %s" %(role,username,sfile)
+            subprocess.call(cmd,shell=True)
+            
+            return redirect('/accounts/filelist/')
+          
+    
+   
+   
+
+    #ret['roles'] = FileRole.objects.all()[0]
+    #ret['roles']=FileRole.objects.values('rolename')
+   
+    
+    #print ret['roles'][0]
+    #ret['roles']={'roles':{'1':["A","B"]}}
+    #print ret['roles']
+   
     return render(request,'app01/setfile.html',ret)
 
 @login_required

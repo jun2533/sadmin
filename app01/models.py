@@ -32,9 +32,20 @@ class Svnversion(models.Model):
 class FileList(models.Model):
     filename = models.CharField(max_length=10)   
 
+class UserList(models.Model):
+    username = models.ForeignKey('UserInfo')
+    rfile = models.CharField(max_length=50)
+    wfile = models.CharField(max_length=50)
+  
+    
+      
+
 class FileRole(models.Model):    
     rolename = models.CharField(max_length=5)
-
+    
+    def __unicode__(self):
+        return self.rolename
+    
 class MysqlEnv(models.Model):
     envname = models.CharField(max_length=50)
 
