@@ -185,7 +185,6 @@ def setfile(request):
         ulist=UserList.objects.filter(username__username=username)
         if not ulist:
             usernameObj=UserInfo.objects.get(username=username)
-            print usernameObj
             if role == '1':
                 rfile= ",".join(file_l)
                 UserList.objects.create(rfile=rfile,username=usernameObj)
@@ -199,36 +198,13 @@ def setfile(request):
             if username and file_l and ulist:
             
                 setrole(role,ulist,file_l)
-            '''
-            r_list=[]
-            ulist=UserList.objects.filter(username__username=username)
-            for i in ulist:
-                r_list=i.rfile.split(",")
-                
-            for i in file_l:
-                if i not in r_list:
-                    r_list.append(i)
-                    rfile =",".join(r_list)
-                    #UserList.objects.filter(username__username=username).update(rfile=rfile)
-            '''
+        
         sfile = " ".join(file_l)
-        cmd = "/usr/bin/sudo /usr/local/shell/test.sh %s %s %s" %(role,username,sfile)
+        cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/setrole.sh %s %s %s"' %(role,username,sfile)
+        #cmd = "/usr/bin/sudo /usr/local/shell/test.sh %s %s %s" %(role,username,sfile)
         subprocess.call(cmd,shell=True)
             
         return redirect('/accounts/filelist/')
-          
-    
-   
-   
-
-    #ret['roles'] = FileRole.objects.all()[0]
-    #ret['roles']=FileRole.objects.values('rolename')
-   
-    
-    #print ret['roles'][0]
-    #ret['roles']={'roles':{'1':["A","B"]}}
-    #print ret['roles']
-   
     return render(request,'app01/setfile.html',ret)
 
 @login_required
