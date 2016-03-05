@@ -173,16 +173,18 @@ def filelist(request):
 def setfile(request):
     
     ret = {'filelist':None,'roles':None}
-    #file_l = request.POST.getlist('filel')
     ret['filelist']= FileList.objects.all()
     ret['roles']=FileRole.objects.all()
    
-    
     if request.method == 'POST':
+        file_l=[]
         username = request.POST.get('username',None)
-        file_l = request.POST.getlist('filel')
+        file_id = request.POST.getlist('filel')
         role = request.POST.get('role')
         ulist=UserList.objects.filter(username__username=username)
+        for i in file_id:
+            for j in FileList.objects.filter(id=i):
+                file_l.append(j.filename)
         if not ulist:
             usernameObj=UserInfo.objects.get(username=username)
             if role == '1':
@@ -194,17 +196,19 @@ def setfile(request):
                 wfile= ",".join(file_l)
                 UserList.objects.create(wfile=wfile,username=usernameObj)
                 #UserList.objects.create()
+            print "OK"
         else:
             if username and file_l and ulist:
-            
                 setrole(role,ulist,file_l)
         
-        sfile = " ".join(file_l)
+        sfile = " ".join(file_id)
         cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/setrole.sh %s %s %s"' %(role,username,sfile)
         #cmd = "/usr/bin/sudo /usr/local/shell/test.sh %s %s %s" %(role,username,sfile)
         subprocess.call(cmd,shell=True)
             
+        
         return redirect('/accounts/filelist/')
+    
     return render(request,'app01/setfile.html',ret)
 
 @login_required

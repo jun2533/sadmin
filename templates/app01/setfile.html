@@ -20,7 +20,7 @@
         <td class="tableleft">文件夹</td>
         <td>
           {% for item in filelist %}
-          <input name="filel" type="checkbox" value="{{ item.filename }}">{{ item.filename }}
+          <input name="filel" type="checkbox" value="{{ item.id }}">{{ item.filename }}
           {% endfor %}
         
         </td>

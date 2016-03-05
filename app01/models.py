@@ -30,7 +30,10 @@ class Svnversion(models.Model):
     version = models.IntegerField()
     
 class FileList(models.Model):
-    filename = models.CharField(max_length=10)   
+    filename = models.CharField(max_length=10)
+       
+    def __unicode__(self):
+        return self.filename
 
 class UserList(models.Model):
     username = models.ForeignKey('UserInfo')
