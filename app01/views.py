@@ -182,28 +182,24 @@ def setfile(request):
         file_id = request.POST.getlist('filel')
         role = request.POST.get('role')
         ulist=UserList.objects.filter(username__username=username)
+        usernameObj=UserInfo.objects.get(username=username)
         for i in file_id:
             for j in FileList.objects.filter(id=i):
                 file_l.append(j.filename)
         if not ulist:
-            usernameObj=UserInfo.objects.get(username=username)
             if role == '1':
                 rfile= ",".join(file_l)
                 UserList.objects.create(rfile=rfile,username=usernameObj)
-                
-            
             else:
                 wfile= ",".join(file_l)
                 UserList.objects.create(wfile=wfile,username=usernameObj)
-                #UserList.objects.create()
-            print "OK"
         else:
             if username and file_l and ulist:
                 setrole(role,ulist,file_l)
         
-        sfile = " ".join(file_id)
-        cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/setrole.sh %s %s %s"' %(role,username,sfile)
-        #cmd = "/usr/bin/sudo /usr/local/shell/test.sh %s %s %s" %(role,username,sfile)
+        fileid = " ".join(file_id)
+        cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/setrole.py %s %s %s"' %(role,usernameObj.id,fileid)
+        #cmd = "/usr/bin/sudo /usr/local/shell/test.sh %s %s %s" %(role,usernameObj.id,fileid)
         subprocess.call(cmd,shell=True)
             
         
