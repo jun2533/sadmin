@@ -198,9 +198,9 @@ def setfile(request):
                 setrole(role,ulist,file_l)
         
         fileid = " ".join(file_id)
-        #cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/setrole.py %s %s %s"' %(role,username,fileid)
+        cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/setrole.py %s %s %s"' %(role,usernameObj.id,fileid)
         #cmd = "/usr/bin/sudo /usr/local/shell/test.sh %s %s %s" %(role,usernameObj.id,fileid)
-        cmd = '/usr/local/shell/setrole.py %s %s %s' %(role,usernameObj.id,fileid)
+        #cmd = '/usr/local/shell/setrole.py %s %s %s' %(role,usernameObj.id,fileid)
         subprocess.call(cmd,shell=True)
             
         
