@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 #coding:utf-8
 
-
+import sys,subprocess,os
 import MySQLdb,time
 
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class MySQL:
     error_code = ''
@@ -38,8 +40,7 @@ class MySQL:
             
         self._cur = self._conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
         self._instance = MySQLdb
-
-
+    
     def query(self,sql):
         try:
             self._cur.execute("SET NAMES utf8")
@@ -50,51 +51,9 @@ class MySQL:
             result = False
         return result
     
-    def update(self,sql):
-        '执行 UPDATE 及 DELETE 语句'
-        try:
-            self._cur.execute("SET NAMES utf8") 
-            result = self._cur.execute(sql)
-            self._conn.commit()
-        except MySQLdb.Error, e:
-            self.error_code = e.args[0]
-            print "数据库错误代码:",e.args[0],e.args[1]
-            result = False
-        return result
-    
-    def insert(self,sql):
-        '执行 INSERT 语句。如主键为自增长int，则返回新生成的ID'
-        try:
-            self._cur.execute("SET NAMES utf8")
-            self._cur.execute(sql)
-            self._conn.commit()
-            return self._conn.insert_id()
-        except MySQLdb.Error, e:
-            self.error_code = e.args[0]
-            return False
-        
-        
-        
     def fetchAllRows(self):
         '返回结果列表'
         return self._cur.fetchall()
-    
-    def fetchOneRow(self):
-        '返回一行结果，然后游标指向下一行。到达最后一行以后，返回None'
-        return self._cur.fetchone()
-    
-    def getRowCount(self):
-        '获取结果行数'
-        return self._cur.rowcount
-    
-    def commit(self):
-        '数据库commit操作'
-        self._conn.commit()
-        
-    def rollback(self):
-        '数据库回滚操作'
-        self._conn.rollback()
-        
     def __del__(self): 
         '释放资源（系统GC自动调用）'
         try:
@@ -106,40 +65,82 @@ class MySQL:
     def  close(self):
         '关闭数据库连接'
         self.__del__()
-        
-if __name__ == '__main__':
 
-#数据库连接参数  
-    dbconfig = {'host':'localhost', 
+
+if __name__ == '__main__':
+    #os.chdir(u'/appdata/Design/设计部数据库/')
+    #print os.getcwd()
+    r = []
+    fl= []
+    fpath='/appdata/Design/设计部数据库/'
+    dbconfig = {'host':'192.168.0.20', 
                 'port': 3306, 
                 'user':'root', 
                 'passwd':'a8804873', 
                 'db':'sadmin', 
                 'charset':'utf8'}
-  
+    db = MySQL(dbconfig)
+    sql =["SELECT * FROM `app01_userinfo` where id=%s" %(sys.argv[2]),
+          "SELECT * FROM `app01_userlist` where username_id=%s" %(sys.argv[2])]
+    for s in sql:
+        db.query(s)
+        r.append(db.fetchAllRows())
+    db.close()
+    
+    username=r[0][0]['username']
+    if sys.argv[1] == '1':
+        for f in (r[1][0]['rfile']).split(","):
+            fl.append(fpath + f)
+        rflag = 'rx'
+    else:
+        for f in (r[1][0]['wfile']).split(","):
+            fl.append(fpath + f)
+        rflag = 'rwx'
+    print rflag
+    lfile=" ".join(fl)
+    cmd = ['setfacl -R -m d:u:%s:%s %s' %(username,rflag,lfile),'setfacl -R -m u:%s:%s %s'%(username,rflag,lfile)]
+    for c in cmd:
+        #print c
+        subprocess.call(c,shell=True)
+    '''
+    print r[0][0]['username']
+    print r[1][0]['rfile']
+    print ","join(r[1][0]['rfile']))
+    username=r[0][0]['username']
+    lfile =(r[1][0]['rfile']).split(",")
+    print lfile
+    role(sys.argv[1],username,lfile)
+    '''
+    '''
+#role username file
+    if sys.argv[1] == '1':
+        print "read"
+    else:
+        print "wirte"
+
+    usernameid=sys.argv[2]
+    print usernameid
+    for fileid in sys.argv[3:]:
+        print fileid
+
+#数据库连接参数  
+    dbconfig = {'host':'192.168.0.12', 
+                'port': 3306, 
+                'user':'xcw_store', 
+                'passwd':'WAswSSN9WkqvtpJL', 
+                'db':'sadmin', 
+                'charset':'utf8'}
 #连接数据库，创建这个类的实例
     db = MySQL(dbconfig)
   
 #操作数据库
-    sql = "SELECT * FROM `app01_userlist` where username_id=%s" %(2)
-    db.query(sql);
+    sql = "SELECT * FROM `app01_userlist` where username_id=%s" %(usernameid)
+    db.query(sql)
   
 #获取结果列表
-    result = db.fetchAllRows();
-    db.close()
+    result = db.fetchAllRows()
+  
 #相当于php里面的var_dump
+    db.close()
     print result
-  
-  
-#对行进行循环
-    #for row in result:
-#使用下标进行取值
-        #print row[0]
-    
-#对列进行循环
-        #for colum in row:
-            #print colum
- 
-#关闭数据库
-    
-   
+    '''
