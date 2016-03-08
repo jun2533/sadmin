@@ -54,6 +54,23 @@ class MySQL:
     def fetchAllRows(self):
         '返回结果列表'
         return self._cur.fetchall()
+    
+    def update(self,sql):
+        '执行 UPDATE 及 DELETE 语句'
+        try:
+            self._cur.execute("SET NAMES utf8") 
+            result = self._cur.execute(sql)
+            self._conn.commit()
+        except MySQLdb.Error, e:
+            self.error_code = e.args[0]
+            print "数据库错误代码:",e.args[0],e.args[1]
+            result = False
+        return result
+    
+    def commit(self):
+        '数据库commit操作'
+        self._conn.commit()
+    
     def __del__(self): 
         '释放资源（系统GC自动调用）'
         try:

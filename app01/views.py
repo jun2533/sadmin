@@ -201,7 +201,7 @@ def setfile(request):
         cmd = '/usr/bin/sudo /usr/bin/ansible -v bjsmb -m shell -a "/usr/local/shell/setrole.py %s %s %s"' %(role,usernameObj.id,fileid)
         #cmd = "/usr/bin/sudo /usr/local/shell/test.sh %s %s %s" %(role,usernameObj.id,fileid)
         #cmd = '/usr/local/shell/setrole.py %s %s %s' %(role,usernameObj.id,fileid)
-        subprocess.call(cmd,shell=True)
+        #subprocess.call(cmd,shell=True)
             
         
         return redirect('/accounts/filelist/')

@@ -15,31 +15,77 @@ def makeSecret(password):
     return "{SSHA}" + encode(h.digest()+salt)
 
 def setrole(role,ulist,mlist):
-    f_list=[]
-    if role == '1':
-        for i in ulist:
-            f_list=i.rfile.split(",")   
-    else:
-        for i in ulist:
-            f_list=i.wfile.split(",")
+    r_list=[]
+    w_list=[]
+    for i in ulist:
+        r_list=i.rfile.split(",")
+        w_list=i.wfile.split(",")
+  
     
    
-    count = len(f_list)
-        
-    for i in mlist:
-        if i not in f_list:
-            f_list.append(i) 
-    
-    if len(f_list) > count :
-        while '' in f_list:
-            f_list.remove('')
+    if role == '1':
+        for i in mlist:
+            if i not in r_list:
+                r_list.append(i) 
+            if i in w_list:
+                w_list.remove(i)
+    else:
+        for i in mlist:
+            if i not in w_list:
+                w_list.append(i)
+            if i in r_list:
+                r_list.remove(i)
             
-        lfile =",".join(f_list)
-        if role == '1':
-            ulist.update(rfile=lfile)
-        else:
-            ulist.update(wfile=lfile)
+    
+    while '' in r_list:
+        r_list.remove('')
+    
+    while '' in w_list:
+        w_list.remove('')
+             
+    srfile =",".join(r_list)
+    swfile =",".join(w_list)    
+    ulist.update(rfile=srfile)  
+    ulist.update(wfile=swfile)
 
+'''
+class setrole():
+    def __init__(self,role,ulist,mlist):
+        self.role=role
+        self.ulist=ulist
+        self.mlist=mlist
+        self.r_list=[]
+        self.w_list=[]
+        for i in self.ulist:
+            self.r_list=i.rfile.split(",")
+            self.w_list=i.wfile.split(",")
+    
+    def set(self):
+        if self.role == '1':
+            for i in self.mlist:
+                if i not in self.r_list:
+                    self.r_list.append(i) 
+                if i in self.w_list:
+                    self.w_list.remove(i)
+        else:
+            for i in self.mlist:
+                if i not in self.w_list:
+                    self.w_list.append(i)
+                if i in self.r_list:
+                    self.r_list.remove(i)
+        
+        while '' in self.r_list:
+            self.r_list.remove('')
+    
+        while '' in self.r_list:
+            self.w_list.remove('')
+    
+    def __del__(self):
+        self.srfile =",".join(self.r_list)
+        self.swfile =",".join(self.w_list)    
+        self.ulist.update(rfile=self.srfile)  
+        self.ulist.update(wfile=self.swfile)
+'''
 
 class conf():
     def __init__(self,cfile,ini,ou):
@@ -75,3 +121,5 @@ if __name__ == "__main__":
     #c.delete_user("ykkk1")
     
     print makeSecret("123@com")
+    
+    

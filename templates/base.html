@@ -34,7 +34,7 @@
          {% if user.is_authenticated %}
           <ul class="nav navbar-nav navbar-left">
                 <li><a href="{% url 'index' %}">Home</a></li>
-                <li><a href="{% url 'index' %}">帐号管理</a></li>
+                <li><a href="{% url 'userlist' %}">帐号管理</a></li>
                 <li><a href="{% url 'svnlist' %}">SVN管理</a></li>
                 <li><a href="{% url 'webupdate' %}">网站发布</a></li>
           </ul>
